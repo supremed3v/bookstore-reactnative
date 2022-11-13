@@ -43,6 +43,13 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  favorites: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Book",
+      required: true,
+    },
+  ],
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 });
