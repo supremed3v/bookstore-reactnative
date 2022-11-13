@@ -2,8 +2,8 @@ const express = require("express");
 require("dotenv").config({ path: "./config/config.env" });
 const fileUpload = require("express-fileupload");
 const connectDB = require("./config/db");
-
-// Load env vars
+const errorMiddleware = require("./middlewares/error");
+const cloudinary = require("cloudinary");
 
 // Connect to database
 connectDB();
@@ -14,9 +14,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload());
 
+app.use(errorMiddleware);
+
 const user = require("./routes/userRoutes");
 
 app.use("/api/v1", user);
+
+// Cloudinary
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
 
 const PORT = process.env.PORT || 5000;
 
