@@ -1,11 +1,23 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { InputOutline } from "react-native-input-outline";
+import { BASEURL } from "@env";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigation } from "@react-navigation/native";
 
-export default function Login({ navigation }) {
+export default function Login() {
+  const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(undefined);
+
+  const { login } = useContext(AuthContext);
+
+  const onLogin = () => {
+    login(email, password);
+    navigation.navigate("Home");
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
@@ -37,7 +49,7 @@ export default function Login({ navigation }) {
           activeColor={"brown"}
         />
         <View style={styles.buttonWrapper}>
-          <Pressable onPress={() => navigation.navigate("Signup")}>
+          <Pressable onPress={onLogin}>
             <Text style={styles.buttonText}>Login</Text>
           </Pressable>
         </View>
