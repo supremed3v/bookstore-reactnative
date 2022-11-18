@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { InputOutline } from "react-native-input-outline";
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
+import { BASEURL } from "@env";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -33,7 +34,7 @@ export default function Signup() {
     setImage(null);
   };
 
-  const onSignup = () => {
+  const onSignup = async () => {
     if (email === "") {
       setEmailError("Email is required");
     } else if (password === "") {
@@ -48,14 +49,25 @@ export default function Signup() {
       setNameError(undefined);
       setImageError(undefined);
     }
-
-    axios.post("http://localhost:3000/signup", {
-      email: email,
-      password: password,
-      name: name,
+    const data = {
+      email,
+      password,
+      name,
       displayName: name,
       avatar: image,
-    });
+    };
+    await axios
+      .post(`${BASEURL}/api/v1/register`, data, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -118,7 +130,7 @@ export default function Signup() {
           )}
         </View>
         <View style={styles.buttonWrapper}>
-          <Pressable>
+          <Pressable onPress={() => onSignup()}>
             <Text style={styles.buttonText}>Signup</Text>
           </Pressable>
         </View>

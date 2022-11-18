@@ -4,6 +4,7 @@ const fileUpload = require("express-fileupload");
 const connectDB = require("./config/db");
 const errorMiddleware = require("./middlewares/error");
 const cloudinary = require("cloudinary");
+const cors = require("cors");
 
 // Connect to database
 connectDB();
@@ -13,6 +14,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload());
+app.use(cors());
 
 app.use(errorMiddleware);
 
