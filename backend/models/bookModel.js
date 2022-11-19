@@ -8,13 +8,9 @@ const bookSchema = new mongoose.Schema({
     minLength: [2, "Title must be at least 2 characters"],
   },
   pdf: {
-    public_id: {
-      type: String,
-      required: true,
-    },
     url: {
       type: String,
-      required: true,
+      required: [true, "Please enter a pdf url"],
     },
   },
   genre: {
@@ -30,13 +26,9 @@ const bookSchema = new mongoose.Schema({
     minLength: [2, "Author must be at least 2 characters"],
   },
   cover: {
-    public_id: {
-      type: String,
-      required: true,
-    },
     url: {
       type: String,
-      required: true,
+      required: [true, "Please enter a cover photo url"],
     },
   },
   description: {
@@ -48,6 +40,9 @@ const bookSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  createdBy: {
+    type: mongoose.Schema.ObjectId,
   },
   reviews: [
     {
