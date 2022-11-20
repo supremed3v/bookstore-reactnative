@@ -29,7 +29,7 @@ export default function Login() {
           style={{ marginTop: 15 }}
           autoCorrect={false}
           keyboardAppearance="light"
-          autoCapitalize="words"
+          autoCapitalize="none"
           value={email}
           onChangeText={(text) => setEmail(text)}
           error={emailError}
@@ -42,10 +42,10 @@ export default function Login() {
           style={{ marginTop: 15 }}
           autoCorrect={false}
           keyboardAppearance="light"
-          autoCapitalize="words"
+          autoCapitalize="none"
           value={password}
           onChangeText={(text) => setPassword(text)}
-          passwordRules={true}
+          secureTextEntry={true}
           activeColor={"brown"}
         />
         <View style={styles.buttonWrapper}>

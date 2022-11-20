@@ -12,8 +12,12 @@ const MainStack = createNativeStackNavigator();
 
 const HomeNavigation = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={Home} />
+    <Tab.Navigator
+      initialRouteName="HomeScreen"
+      screenOptions={{ headerShown: false }}
+    >
+      <Tab.Screen name="HomeScreen" component={Home} />
+      <Tab.Screen name="Favorites" component={Home} />
     </Tab.Navigator>
   );
 };
@@ -30,6 +34,17 @@ const AuthStackScreen = () => {
   );
 };
 
+const MainStackScreen = () => {
+  return (
+    <MainStack.Navigator
+      initialRouteName="Home"
+      screenOptions={{ headerShown: false }}
+    >
+      <MainStack.Screen name="Home" component={HomeNavigation} />
+    </MainStack.Navigator>
+  );
+};
+
 export default function Navigation() {
   const { isLoading, userToken } = useContext(AuthContext);
 
@@ -40,28 +55,10 @@ export default function Navigation() {
       </View>
     );
   }
-  console.log(userToken);
   return (
     <AuthProvider>
       <NavigationContainer>
-        {userToken ? (
-          <MainStack.Navigator
-            initialRouteName="Home"
-            screenOptions={{ headerShown: false }}
-          >
-            <MainStack.Screen name="Home" component={HomeNavigation} />
-
-            <AuthStack.Screen name="Login" component={Login} />
-          </MainStack.Navigator>
-        ) : (
-          <AuthStack.Navigator
-            initialRouteName="Login"
-            screenOptions={{ headerShown: false }}
-          >
-            <AuthStack.Screen name="Login" component={Login} />
-            <AuthStack.Screen name="Signup" component={Signup} />
-          </AuthStack.Navigator>
-        )}
+        {userToken !== null ? <MainStackScreen /> : <AuthStackScreen />}
       </NavigationContainer>
     </AuthProvider>
   );
