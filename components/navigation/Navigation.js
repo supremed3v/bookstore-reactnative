@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { AuthContext, AuthProvider } from "../context/AuthContext";
 import { View, Text, ActivityIndicator } from "react-native";
+import { BookProvider } from "../context/BookContext";
 
 const Tab = createBottomTabNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -49,15 +50,17 @@ export default function Navigation() {
   }
   return (
     <AuthProvider>
-      <NavigationContainer>
-        <MainStack.Navigator
-          initialRouteName={userToken !== null ? "HomeScreen" : "Auth"}
-          screenOptions={{ headerShown: false }}
-        >
-          <MainStack.Screen name="HomeScreen" component={HomeNavigation} />
-          <MainStack.Screen name="Auth" component={AuthStackScreen} />
-        </MainStack.Navigator>
-      </NavigationContainer>
+      <BookProvider>
+        <NavigationContainer>
+          <MainStack.Navigator
+            initialRouteName={userToken !== null ? "HomeScreen" : "Auth"}
+            screenOptions={{ headerShown: false }}
+          >
+            <MainStack.Screen name="HomeScreen" component={HomeNavigation} />
+            <MainStack.Screen name="Auth" component={AuthStackScreen} />
+          </MainStack.Navigator>
+        </NavigationContainer>
+      </BookProvider>
     </AuthProvider>
   );
 }

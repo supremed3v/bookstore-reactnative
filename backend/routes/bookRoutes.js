@@ -16,7 +16,7 @@ const router = express.Router();
 router
   .route("/new")
   .post(isAuthenticatedUser, authorizeRoles("admin"), addBooks);
-router.route("/list").get(getBooks);
+router.route("/get-books").get(getBooks);
 router.route("/:id").get(getSingleBook);
 router
   .route("/:id")
