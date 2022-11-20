@@ -2,7 +2,6 @@ import React, { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BASEURL } from "@env";
-import Cookie from "react-native-cookie";
 
 export const AuthContext = createContext();
 
@@ -18,8 +17,7 @@ export const AuthProvider = ({ children }) => {
         password,
       })
       .then((res) => {
-        token = res.data.token;
-        setUserToken(token);
+        setUserToken(res.data.token);
         userData = res.data.user;
         setUser(userData);
         AsyncStorage.setItem("userToken", userToken);
@@ -31,11 +29,11 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false);
   };
 
-  const logout = () => {
+  const logout = async () => {
     setIsLoading(true);
+    await AsyncStorage.removeItem("userInfo");
+    await AsyncStorage.removeItem("userToken");
     setUserToken(null);
-    AsyncStorage.removeItem("userInfo");
-    AsyncStorage.removeItem("userToken");
     setUser(null);
     setIsLoading(false);
   };
@@ -45,8 +43,11 @@ export const AuthProvider = ({ children }) => {
       setIsLoading(true);
       let userToken = await AsyncStorage.getItem("userToken");
       let userInfo = await AsyncStorage.getItem("userInfo");
-      setUserToken(userToken);
-      setUser(JSON.parse(userInfo));
+      userInfo = JSON.parse(userInfo);
+      if (userInfo) {
+        setUser(userInfo);
+        setUserToken(userToken);
+      }
       setIsLoading(false);
     } catch (error) {
       console.log(error);

@@ -5,16 +5,17 @@ import { useNavigation } from "@react-navigation/native";
 import Form from "../utils/Form";
 export default function Home() {
   const navigation = useNavigation();
-  const { logout, user } = useContext(AuthContext);
+  const { logout, userToken, user } = useContext(AuthContext);
   const onLogout = () => {
     logout();
-    navigation.navigate("Login");
+    navigation.navigate("Auth");
   };
+  console.log(user, userToken);
   return (
-    <View style={{ flex: 1, marginHorizontal: 10, marginVertical: 10 }}>
-      {/* <Pressable onPress={onLogout}>
+    <View style={{ flex: 1, marginHorizontal: 10, marginVertical: 40 }}>
+      <Pressable onPress={onLogout}>
         <Text>Logout</Text>
-      </Pressable> */}
+      </Pressable>
       <Form />
     </View>
   );

@@ -1,14 +1,18 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
-import React, { useState } from "react";
+import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import React, { useState, useContext } from "react";
 import { InputOutline } from "react-native-input-outline";
-import { CLOUDINARY_URL } from "@env";
+import { CLOUDINARY_URL, BASEURL } from "@env";
+import * as FileSystem from "expo-file-system";
 
 import * as ImagePicker from "expo-image-picker";
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
 import Button from "./Button";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Form() {
+  const { userToken } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     pdf: "",
@@ -16,6 +20,7 @@ export default function Form() {
     genre: "",
     author: "",
     cover: "",
+    token: userToken,
   });
   const [image, setImage] = useState(null);
   const [doc, setDoc] = useState(null);
@@ -63,14 +68,19 @@ export default function Form() {
     });
     console.log(result);
     if (!result.canceled) {
-      setDoc(result.assets[0].base64);
+      setDoc(result.uri);
     }
 
-    let base64Img = `data:application/pdf;base64,${result.assets[0].base64}`;
+    const options = { encoding: FileSystem.EncodingType.Base64 };
+
+    const pdf = await FileSystem.readAsStringAsync(result.uri, options);
+
+    let base64Img = `data:application/pdf;base64,${pdf}`;
     let data = {
       file: base64Img,
       upload_preset: "spklivem",
     };
+    console.log(data);
     fetch(CLOUDINARY_URL, {
       body: JSON.stringify(data),
       headers: {
@@ -86,8 +96,34 @@ export default function Form() {
       .catch((err) => console.log(err));
   };
 
-  const onSubmit = async () => {};
-  console.log(formData);
+  const onSubmit = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.post(`${BASEURL}/api/v1/book/new`, formData);
+      console.log(res.data);
+      setFormData({
+        name: "",
+        pdf: "",
+        description: "",
+        genre: "",
+        author: "",
+        cover: "",
+      });
+      doc && setDoc(null);
+      image && setImage(null);
+      setLoading(false);
+    } catch (error) {
+      console.log(error.message);
+      setLoading(false);
+    }
+  };
+  if (loading)
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size={"large"} color="brown" />
+        <Text>Loading</Text>
+      </View>
+    );
   return (
     <>
       <Text style={styles.heading}>Add Book</Text>
@@ -161,15 +197,13 @@ export default function Form() {
           )}
         </View>
         <View>
-          {formData.pdf !== "" &&
-          formData.cover !== "" &&
+          {formData.pdf === "" &&
+          formData.cover === "" &&
           formData.author === "" &&
           formData.cover === "" &&
           formData.description === "" &&
           formData.genre === "" &&
           formData.name === "" ? (
-            <Button title={"Submit"} onPress={onSubmit} />
-          ) : (
             <Text
               style={{
                 color: "red",
@@ -180,6 +214,8 @@ export default function Form() {
             >
               Please fill all fields to submit
             </Text>
+          ) : (
+            <Button title={"Submit"} onPress={onSubmit} />
           )}
         </View>
       </View>

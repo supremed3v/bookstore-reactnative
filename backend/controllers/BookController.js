@@ -1,4 +1,6 @@
 const Book = require("../models/bookModel");
+const User = require("../models/userModel");
+const jwt = require("jsonwebtoken");
 
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const ErrorHandler = require("../utils/errorHandler");
@@ -7,14 +9,16 @@ const ErrorHandler = require("../utils/errorHandler");
 
 exports.addBooks = catchAsyncErrors(async (req, res, next) => {
   const { name, pdf, description, genre, author, cover, token } = req.body;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const user = decoded.id;
   const book = await Book.create({
-    name,
+    title: name,
     pdf,
     description,
     genre,
     author,
     cover,
-    token,
+    createdBy: user,
   });
   res.status(201).json({
     success: true,

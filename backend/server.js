@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 const errorMiddleware = require("./middlewares/error");
 const cloudinary = require("cloudinary");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 // Connect to database
 connectDB();
@@ -15,12 +16,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(fileUpload());
 app.use(cors());
+app.use(cookieParser());
 
 app.use(errorMiddleware);
 
 const user = require("./routes/userRoutes");
+const book = require("./routes/bookRoutes");
 
 app.use("/api/v1", user);
+app.use("/api/v1/book", book);
 
 // Cloudinary
 

@@ -1,7 +1,12 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { InputOutline } from "react-native-input-outline";
-import { BASEURL } from "@env";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 
@@ -11,12 +16,26 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(undefined);
 
-  const { login } = useContext(AuthContext);
+  const { login, isLoading, user, userToken } = useContext(AuthContext);
+  console.log(email, password);
 
   const onLogin = () => {
     login(email, password);
-    navigation.navigate("Home");
+    if (userToken && user !== null) {
+      navigation.navigate("HomeScreen");
+    }
   };
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator
+          style={{ backgroundColor: "brown" }}
+          size={"large"}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

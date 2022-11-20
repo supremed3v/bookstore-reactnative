@@ -1,5 +1,14 @@
 const express = require("express");
-const { addBooks, getBooksByGenre } = require("../controllers/BookController");
+const {
+  addBooks,
+  getBooksByGenre,
+  getBooks,
+  getSingleBook,
+  getBooksByAuthor,
+  updateBook,
+  searchBook,
+  deleteBook,
+} = require("../controllers/BookController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
 
 const router = express.Router();
@@ -7,10 +16,10 @@ const router = express.Router();
 router
   .route("/new")
   .post(isAuthenticatedUser, authorizeRoles("admin"), addBooks);
-router.route("/books").get(getAllBooks);
-router.route("/book/:id").get(getSingleBook);
+router.route("/list").get(getBooks);
+router.route("/:id").get(getSingleBook);
 router
-  .route("/book/:id")
+  .route("/:id")
   .put(isAuthenticatedUser, authorizeRoles("admin"), updateBook)
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteBook);
 router.route("/search?keyword=bookName").get(searchBook);
