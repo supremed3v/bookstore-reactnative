@@ -147,13 +147,40 @@ export default function Form() {
           activeColor={"brown"}
         />
         <View>
-          <Button title={"Select Image"} onPress={selectImage} />
+          {image !== null ? (
+            <Text style={{ color: "green" }}>Image selected</Text>
+          ) : (
+            <Button title={"Select Image"} onPress={selectImage} />
+          )}
         </View>
         <View>
-          <Button title={"Select Book PDF"} onPress={selectPdf} />
+          {doc !== null ? (
+            <Text style={{ color: "green" }}>Pdf selected</Text>
+          ) : (
+            <Button title={"Select Pdf"} onPress={selectPdf} />
+          )}
         </View>
         <View>
-          <Button title={"Add Book"} onPress={onSubmit} />
+          {formData.pdf !== "" &&
+          formData.cover !== "" &&
+          formData.author === "" &&
+          formData.cover === "" &&
+          formData.description === "" &&
+          formData.genre === "" &&
+          formData.name === "" ? (
+            <Button title={"Submit"} onPress={onSubmit} />
+          ) : (
+            <Text
+              style={{
+                color: "red",
+                marginTop: 20,
+                fontWeight: "600",
+                fontSize: 16,
+              }}
+            >
+              Please fill all fields to submit
+            </Text>
+          )}
         </View>
       </View>
     </>
