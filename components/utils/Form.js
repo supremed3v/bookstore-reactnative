@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  Pressable,
+  ScrollView,
+} from "react-native";
 import React, { useState, useContext } from "react";
 import { InputOutline } from "react-native-input-outline";
 import { CLOUDINARY_URL, BASEURL } from "@env";
@@ -9,21 +16,54 @@ import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
 import Button from "./Button";
 import { AuthContext } from "../context/AuthContext";
+import CustomText from "./CustomText";
+
+const GENRES = [
+  { id: 1, item: "Fantasy" },
+  { id: 2, item: "Horror" },
+  { id: 3, item: "Romance" },
+  { id: 4, item: "Sci-Fi" },
+  { id: 5, item: "Thriller" },
+  { id: 6, item: "Mystery" },
+  { id: 7, item: "Drama" },
+  { id: 8, item: "Comedy" },
+  { id: 9, item: "Action" },
+  { id: 10, item: "Adventure" },
+  { id: 11, item: "Crime" },
+  { id: 12, item: "Historical" },
+  { id: 13, item: "Historical Fiction" },
+  { id: 14, item: "Biography" },
+  { id: 15, item: "Self-help" },
+  { id: 16, item: "Technology" },
+];
 
 export default function Form() {
   const { userToken } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
+
+  const [selectedItems, setSelectedItems] = useState([]);
+
   const [formData, setFormData] = useState({
     name: "",
     pdf: "",
     description: "",
-    genre: "",
+    genre: [],
     author: "",
     cover: "",
     token: userToken,
   });
   const [image, setImage] = useState(null);
   const [doc, setDoc] = useState(null);
+  function pickGenre(selectedGenres) {
+    if (selectedItems.includes(selectedGenres)) {
+      setSelectedItems(
+        selectedItems.filter((genres) => genres != selectedGenres)
+      );
+      return;
+    }
+    setSelectedItems((selectedItems) => selectedItems.concat(selectedGenres));
+    setFormData({ ...formData, genre: selectedItems });
+  }
 
   const selectImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -33,8 +73,6 @@ export default function Form() {
       quality: 1,
       base64: true,
     });
-
-    console.log(result);
 
     if (!result.canceled) {
       setImage(result.assets[0].base64);
@@ -55,7 +93,6 @@ export default function Form() {
     })
       .then(async (r) => {
         let data = await r.json();
-        console.log(data);
         setFormData({ ...formData, cover: data.url });
       })
       .catch((err) => console.log(err));
@@ -66,7 +103,6 @@ export default function Form() {
       type: "application/pdf",
       base64: true,
     });
-    console.log(result);
     if (!result.canceled) {
       setDoc(result.uri);
     }
@@ -80,7 +116,6 @@ export default function Form() {
       file: base64Img,
       upload_preset: "spklivem",
     };
-    console.log(data);
     fetch(CLOUDINARY_URL, {
       body: JSON.stringify(data),
       headers: {
@@ -90,7 +125,6 @@ export default function Form() {
     })
       .then(async (r) => {
         let data = await r.json();
-        console.log(data);
         setFormData({ ...formData, pdf: data.url });
       })
       .catch((err) => console.log(err));
@@ -100,7 +134,6 @@ export default function Form() {
     setLoading(true);
     try {
       const res = await axios.post(`${BASEURL}/api/v1/book/new`, formData);
-      console.log(res.data);
       setFormData({
         name: "",
         pdf: "",
@@ -125,7 +158,7 @@ export default function Form() {
       </View>
     );
   return (
-    <>
+    <ScrollView>
       <Text style={styles.heading}>Add Book</Text>
       <View style={styles.container}>
         <InputOutline
@@ -158,19 +191,6 @@ export default function Form() {
         />
         <InputOutline
           fontColor={"#000"}
-          placeholder="Enter genre"
-          fontSize={14}
-          style={{ marginTop: 15 }}
-          autoCorrect={false}
-          keyboardAppearance="light"
-          autoCapitalize="none"
-          value={formData.genre}
-          onChangeText={(genre) => setFormData({ ...formData, genre })}
-          // error={inputError}
-          activeColor={"brown"}
-        />
-        <InputOutline
-          fontColor={"#000"}
           placeholder="Enter author name"
           fontSize={14}
           style={{ marginTop: 15 }}
@@ -182,6 +202,38 @@ export default function Form() {
           // error={inputError}
           activeColor={"brown"}
         />
+        <CustomText text={"Select Genre"} weight={"700"} size={24} />
+        <View style={styles.wrapper}>
+          {GENRES.map((genre) => (
+            <View
+              key={genre.id}
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row",
+              }}
+            >
+              <Pressable
+                onPress={() => pickGenre(genre.item)}
+                style={
+                  selectedItems.includes(genre.item)
+                    ? styles.containerPrimary
+                    : styles.containerSecondary
+                }
+              >
+                <Text
+                  style={
+                    selectedItems.includes(genre.item)
+                      ? styles.buttonText
+                      : styles.buttonTextSecondary
+                  }
+                >
+                  {genre.item}
+                </Text>
+              </Pressable>
+            </View>
+          ))}
+        </View>
         <View>
           {image !== null ? (
             <Text style={{ color: "green" }}>Image selected</Text>
@@ -219,24 +271,72 @@ export default function Form() {
           )}
         </View>
       </View>
-    </>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     alignItems: "center",
     marginVertical: 50,
+    marginHorizontal: 10,
+  },
+  containerPrimary: {
+    width: 110,
+    backgroundColor: "#665230",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    borderRadius: 15,
+    borderColor: "#f3f3f3",
+    marginHorizontal: 5,
+    marginBottom: 10,
+    flexDirection: "row",
+    paddingLeft: 10,
   },
   heading: {
     fontSize: 30,
     fontWeight: "600",
     textAlign: "left",
-    color: "brown",
+    color: "#FFf",
     marginTop: 40,
     letterSpacing: 1,
     marginLeft: 20,
     textDecorationLine: "underline",
+  },
+  wrapper: {
+    marginLeft: -2,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginHorizontal: 10,
+    justifyContent: "space-evenly",
+    marginTop: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    paddingVertical: 5,
+    color: "#F9C975",
+    fontWeight: "500",
+    textAlign: "center",
+  },
+
+  containerSecondary: {
+    width: 110,
+    backgroundColor: "#FFF",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    borderRadius: 15,
+    borderColor: "#f3f3f3",
+    marginHorizontal: 5,
+    marginBottom: 10,
+    flexDirection: "row",
+    paddingLeft: 10,
+  },
+  buttonTextSecondary: {
+    fontSize: 16,
+    paddingVertical: 5,
+    color: "#000",
+    fontWeight: "500",
+    textAlign: "center",
   },
 });

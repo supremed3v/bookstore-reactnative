@@ -11,12 +11,14 @@ const bookSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please enter a pdf url"],
   },
-  genre: {
-    type: String,
-    required: [true, "Please enter a genre"],
-    maxLength: [100, "Genre cannot exceed 100 characters"],
-    minLength: [2, "Genre must be at least 2 characters"],
-  },
+  genre: [
+    {
+      type: String,
+      required: [true, "Please enter a genre"],
+      maxLength: [100, "Genre cannot exceed 100 characters"],
+      minLength: [2, "Genre must be at least 2 characters"],
+    },
+  ],
   author: {
     type: String,
     required: [true, "Please enter an author"],

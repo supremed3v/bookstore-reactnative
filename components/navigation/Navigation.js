@@ -14,6 +14,7 @@ import {
 } from "@expo/vector-icons";
 import BookView from "../screens/BookView";
 import Reader from "../utils/Reader";
+import AddBook from "../screens/AddBook";
 
 const Tab = createBottomTabNavigator();
 const AuthStack = createNativeStackNavigator();
@@ -83,7 +84,7 @@ const HomeNavigation = ({ navigation }) => {
             />
           ),
         }}
-        component={Home}
+        component={AddBook}
       />
     </Tab.Navigator>
   );
