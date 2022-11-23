@@ -148,6 +148,7 @@ export default function Form() {
       genre: "",
       author: "",
       cover: "",
+      token: userToken,
     });
     doc && setDoc(null);
     image && setImage(null);

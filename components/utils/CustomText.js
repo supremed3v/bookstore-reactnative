@@ -12,6 +12,7 @@ export default function CustomText({ fontFamily, text, size, color, weight }) {
           fontSize: size,
           color: !color ? colors.text : color,
           fontWeight: weight,
+          width: 200,
         }}
       >
         {text}

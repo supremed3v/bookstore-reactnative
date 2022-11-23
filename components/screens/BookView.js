@@ -61,8 +61,13 @@ export default function BookView({ route, navigation: { goBack } }) {
               weight={"700"}
               color={colors.iconColor}
             />
-
-            <Text style={styles.genreText}>{item.genre}</Text>
+            <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+              {item.genre.map((genre) => (
+                <Text key={genre} style={styles.genreText}>
+                  {genre}
+                </Text>
+              ))}
+            </View>
             <Text
               style={{
                 color: colors.text,
