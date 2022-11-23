@@ -1,12 +1,11 @@
 import {
   View,
-  Text,
   Pressable,
   ActivityIndicator,
-  Image,
   FlatList,
   ScrollView,
 } from "react-native";
+
 import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigation } from "@react-navigation/native";

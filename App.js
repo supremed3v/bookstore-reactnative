@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useContext, useEffect } from "react";
-import { View } from "react-native";
+import { LogBox } from "react-native";
 import { AuthContext, AuthProvider } from "./components/context/AuthContext";
 import Navigation from "./components/navigation/Navigation";
 import AppLoading from "expo-app-loading";
@@ -17,6 +17,10 @@ import {
   Lato_900Black,
   Lato_900Black_Italic,
 } from "@expo-google-fonts/lato";
+
+LogBox.ignoreLogs([
+  "VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead",
+]);
 export default function App() {
   let [fontsLoaded] = useFonts({
     Lato_100Thin,
