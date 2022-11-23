@@ -133,22 +133,25 @@ export default function Form() {
   const onSubmit = async () => {
     setLoading(true);
     try {
-      const res = await axios.post(`${BASEURL}/api/v1/book/new`, formData);
-      setFormData({
-        name: "",
-        pdf: "",
-        description: "",
-        genre: "",
-        author: "",
-        cover: "",
-      });
-      doc && setDoc(null);
-      image && setImage(null);
+      const res = await axios.post(`${BASEURL}/book/new`, formData);
       setLoading(false);
+      console.log(res);
     } catch (error) {
       console.log(error.message);
       setLoading(false);
     }
+
+    setFormData({
+      name: "",
+      pdf: "",
+      description: "",
+      genre: "",
+      author: "",
+      cover: "",
+    });
+    doc && setDoc(null);
+    image && setImage(null);
+    selectedItems && setSelectedItems([]);
   };
   if (loading)
     return (
@@ -157,6 +160,8 @@ export default function Form() {
         <Text>Loading</Text>
       </View>
     );
+
+  console.log(formData);
   return (
     <ScrollView>
       <Text style={styles.heading}>Add Book</Text>
