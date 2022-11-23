@@ -13,8 +13,7 @@ export default function Search() {
     return data.filter(
       (item) =>
         item.title.toLowerCase().includes(query.toLowerCase()) ||
-        item.author.toLowerCase().includes(query.toLowerCase()) ||
-        item.genre.toLowerCase().includes(query.toLowerCase())
+        item.author.toLowerCase().includes(query.toLowerCase())
     );
   };
   return (

@@ -8,9 +8,10 @@ export default function Menu() {
   const { user } = useContext(AuthContext);
   console.log(user);
   return (
-    <View>
+    <View style={{ marginHorizontal: 20, marginVertical: 50 }}>
       <CustomText text={"Options"} />
       {user.role === "admin" && <Button title={"Admin"} />}
+      <Button title={"Logout"} />
     </View>
   );
 }
