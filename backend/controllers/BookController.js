@@ -119,3 +119,37 @@ exports.getBooksByAuthor = catchAsyncErrors(async (req, res, next) => {
     books,
   });
 });
+
+exports.addToFavourites = catchAsyncErrors(async (req, res, next) => {
+  const { bookId, token } = req.body;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const user = decoded.id;
+  const book = await Book.findById(bookId);
+  const userFavourites = await User.findById(user).populate("favorites");
+  if (userFavourites.favorites.includes(book)) {
+    return next(new ErrorHandler("Book already in favourites", 400));
+  }
+  userFavourites.favorites.push(book);
+  await userFavourites.save();
+  res.status(200).json({
+    success: true,
+    userFavourites,
+  });
+});
+
+exports.removeFromFavourites = catchAsyncErrors(async (req, res, next) => {
+  const { bookId, token } = req.body;
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const user = decoded.id;
+  const book = await Book.findById(bookId);
+  const userFavourites = await User.findById(user).populate("favorites");
+  if (!userFavourites.favorites.includes(book)) {
+    return next(new ErrorHandler("Book not in favourites", 400));
+  }
+  userFavourites.favorites.remove(book);
+  await userFavourites.save();
+  res.status(200).json({
+    success: true,
+    userFavourites,
+  });
+});

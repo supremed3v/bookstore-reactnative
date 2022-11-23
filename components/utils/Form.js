@@ -167,7 +167,6 @@ export default function Form() {
       </View>
     );
 
-  console.log(formData);
   return (
     <ScrollView>
       <Text style={styles.heading}>Add Book</Text>

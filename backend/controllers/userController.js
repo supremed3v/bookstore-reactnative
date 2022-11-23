@@ -1,5 +1,3 @@
-const crypto = require("crypto");
-const cloudinary = require("cloudinary");
 const User = require("../models/userModel");
 const sendToken = require("../utils/jwtToken");
 const ErrorHandler = require("../utils/errorHandler");

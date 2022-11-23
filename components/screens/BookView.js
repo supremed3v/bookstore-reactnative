@@ -6,22 +6,66 @@ import {
   ScrollView,
   StyleSheet,
 } from "react-native";
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import CustomText from "../utils/CustomText";
 import { Fontisto, Ionicons } from "@expo/vector-icons";
 import { useTheme } from "@react-navigation/native";
-import PdfReader from "rn-pdf-reader-js";
 import { useNavigation } from "@react-navigation/native";
+import { BASEURL } from "@env";
+import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function BookView({ route, navigation: { goBack } }) {
   const navigation = useNavigation();
+  const { userToken } = useContext(AuthContext);
   const { item } = route.params;
-  console.log(item.title);
+  const [isFav, setIsFav] = useState(false);
   const { colors } = useTheme();
   const book = item.pdf;
   const onRead = () => {
     navigation.navigate("PdfReader", { book });
   };
+
+  const onFav = async () => {
+    if (isFav) {
+      setIsFav(false);
+      await AsyncStorage.getItem("favourites").then((favourites) => {
+        const favs = JSON.parse(favourites);
+        const newFavs = favs.filter((fav) => fav._id !== item._id);
+        AsyncStorage.setItem("favourites", JSON.stringify(newFavs));
+        console.log(newFavs);
+      });
+    } else {
+      setIsFav(true);
+      await AsyncStorage.getItem("favourites").then((favourites) => {
+        const favs = JSON.parse(favourites);
+        favs.push(item);
+        AsyncStorage.setItem("favourites", JSON.stringify(favs));
+        console.log("favs", favs);
+      });
+    }
+  };
+
+  const asyncStorage = async () => {
+    try {
+      const favourites = await AsyncStorage.getItem("favourites");
+      if (favourites !== null) {
+        const favs = JSON.parse(favourites);
+        const fav = favs.find((fav) => fav._id === item._id);
+        if (fav) {
+          setIsFav(true);
+        }
+      }
+      console.log("favourites", favourites);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    asyncStorage();
+  }, []);
 
   return (
     <>
@@ -51,7 +95,12 @@ export default function BookView({ route, navigation: { goBack } }) {
                 size={30}
                 color={colors.iconColor}
               />
-              <Fontisto name="favorite" size={30} color={colors.iconColor} />
+              <Fontisto
+                name="favorite"
+                size={30}
+                color={isFav ? colors.text : colors.iconColor}
+                onPress={() => onFav()}
+              />
             </View>
           </View>
           <View>

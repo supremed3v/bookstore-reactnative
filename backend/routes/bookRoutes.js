@@ -1,4 +1,5 @@
 const express = require("express");
+const { remove } = require("lodash");
 const {
   addBooks,
   getBooksByGenre,
@@ -8,6 +9,8 @@ const {
   updateBook,
   searchBook,
   deleteBook,
+  addToFavourites,
+  removeFromFavourites,
 } = require("../controllers/BookController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middlewares/auth");
 
@@ -24,6 +27,8 @@ router
   .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteBook);
 router.route("/search?keyword=bookName").get(searchBook);
 router.route("/search?keyword=genre").get(getBooksByGenre);
-router.route("books?author=authorName").get(getBooksByAuthor);
+router.route("/books?author=authorName").get(getBooksByAuthor);
+router.route("/addFavorite").post(isAuthenticatedUser, addToFavourites);
+router.route("/removeFavorite").post(isAuthenticatedUser, removeFromFavourites);
 
 module.exports = router;
