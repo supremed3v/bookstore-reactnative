@@ -77,13 +77,13 @@ export default function Form() {
     if (!result.canceled) {
       setImage(result.assets[0].base64);
     }
-
     let base64Img = `data:image/jpg;base64,${result.assets[0].base64}`;
     let data = {
       file: base64Img,
       upload_preset: "spklivem",
     };
 
+    setLoading(true);
     fetch(CLOUDINARY_URL, {
       body: JSON.stringify(data),
       headers: {
@@ -92,8 +92,10 @@ export default function Form() {
       method: "POST",
     })
       .then(async (r) => {
+        setLoading(true);
         let data = await r.json();
         setFormData({ ...formData, cover: data.url });
+        setLoading(false);
       })
       .catch((err) => console.log(err));
   };
@@ -116,6 +118,7 @@ export default function Form() {
       file: base64Img,
       upload_preset: "spklivem",
     };
+    setLoading(true);
     fetch(CLOUDINARY_URL, {
       body: JSON.stringify(data),
       headers: {
@@ -124,8 +127,10 @@ export default function Form() {
       method: "POST",
     })
       .then(async (r) => {
+        setLoading(true);
         let data = await r.json();
         setFormData({ ...formData, pdf: data.url });
+        setLoading(false);
       })
       .catch((err) => console.log(err));
   };
@@ -273,7 +278,18 @@ export default function Form() {
               Please fill all fields to submit
             </Text>
           ) : (
-            <Button title={"Submit"} onPress={onSubmit} />
+            <View style={styles.buttonWrapper}>
+              <Pressable
+                onPress={onSubmit}
+                disabled={
+                  loading && formData.image === "" && formData.pdf === ""
+                    ? false
+                    : true
+                }
+              >
+                <Text style={styles.buttonTextSubmit}>Submit</Text>
+              </Pressable>
+            </View>
           )}
         </View>
       </View>
@@ -344,5 +360,19 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "500",
     textAlign: "center",
+  },
+  buttonWrapper: {
+    marginTop: 30,
+    backgroundColor: "brown",
+    width: 150,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 40,
+  },
+  buttonTextSubmit: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
 });

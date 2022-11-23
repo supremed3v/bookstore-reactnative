@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home, Login, Signup } from "../screens";
+import { Home, Login, Menu, Search, Signup } from "../screens";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { AuthContext, AuthProvider } from "../context/AuthContext";
@@ -58,7 +58,7 @@ const HomeNavigation = ({ navigation }) => {
             />
           ),
         }}
-        component={Home}
+        component={Search}
       />
       <Tab.Screen
         name="Favorites"
@@ -84,7 +84,7 @@ const HomeNavigation = ({ navigation }) => {
             />
           ),
         }}
-        component={AddBook}
+        component={Menu}
       />
     </Tab.Navigator>
   );

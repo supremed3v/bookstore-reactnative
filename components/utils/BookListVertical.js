@@ -37,6 +37,7 @@ export default function BookListVertical({ item }) {
             justifyContent: "center",
             alignItems: "flex-start",
             flexDirection: "row",
+            width: "100%",
           }}
         >
           {item.genre.map((genre) => (
@@ -44,10 +45,8 @@ export default function BookListVertical({ item }) {
               style={{
                 backgroundColor: "#665230",
                 color: "#F9C975",
-                justifyContent: "center",
-                alignItems: "center",
                 height: 20,
-                width: 70,
+                width: "auto",
                 textAlign: "center",
                 marginTop: 10,
                 borderRadius: 10,
@@ -76,7 +75,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   container: {
-    flex: 1,
+    // flex: 1,
     flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
   },
 });
