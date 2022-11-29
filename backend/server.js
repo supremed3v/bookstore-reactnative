@@ -18,7 +18,7 @@ app.use(fileUpload());
 app.use(cors());
 app.use(cookieParser());
 
-app.use(errorMiddleware);
+// app.use(errorMiddleware);
 
 const user = require("./routes/userRoutes");
 const book = require("./routes/bookRoutes");
