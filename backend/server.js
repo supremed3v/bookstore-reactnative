@@ -25,6 +25,11 @@ const book = require("./routes/bookRoutes");
 
 app.use("/api/v1", user);
 app.use("/api/v1/book", book);
+app.use("/", (req, res) => {
+  res.send({
+    message: "Welcome to the Book Store API",
+  });
+});
 
 // Cloudinary
 
